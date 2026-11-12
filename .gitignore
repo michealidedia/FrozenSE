@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+runs/
+*.pt
+*.pth
+FrozenSE_SAM_Revision_Package.zip
+.DS_Store

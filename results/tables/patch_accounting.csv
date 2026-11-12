@@ -1,0 +1,8 @@
+model,tumour_patches_tumour_predicted,tumour_patches_none_predicted,tumour_free_correctly_empty,tumour_free_correctly_empty_pct,tumour_free_false_positive,dice_on_tumour_patches_pct,n_cores_with_tumour
+FrozenSE-UNI,2659,44,594,51.33967156439066,563,77.71110309051036,176
+FrozenSE-Phikon,2673,30,398,34.39930855661193,759,78.73307572011687,176
+FrozenSE-SAM,2698,5,295,25.49697493517718,862,79.64814339734514,176
+U-Net (ImageNet),2698,5,319,27.571305099394987,838,80.75671655221576,176
+U-Net (scratch),2700,3,294,25.410544511668107,863,80.56262277998498,176
+nnU-Net (2D),2656,47,272,23.50907519446845,885,77.40261635448779,176
+MobileSAM (zero-shot),2703,0,0,0.0,1157,72.67769232530293,176

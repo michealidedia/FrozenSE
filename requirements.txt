@@ -1,0 +1,20 @@
+# Versions used for the reported runs (Python 3.13)
+torch>=2.11
+torchvision
+numpy
+scipy
+pandas
+pillow
+opencv-python-headless
+scikit-image
+tqdm
+matplotlib
+albumentations==2.0.8
+segmentation-models-pytorch==0.6.0
+timm>=1.0.30
+transformers>=4.57          # Phikon; 4.x and 5.x both work
+huggingface_hub
+# MobileSAM (FrozenSE-SAM, zero-shot baseline):
+#   pip install git+https://github.com/ChaoningZhang/MobileSAM.git
+# nnU-Net baseline only:
+#   pip install nnunetv2==2.6.4

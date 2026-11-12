@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "FrozenSE: A parameter-efficient adaptation framework for frozen foundation encoders in prostate cancer histopathology segmentation"
+type: software
+authors:
+  - family-names: Emmanuel
+    given-names: Jerry
+    affiliation: "Covenant University, Ota, Nigeria"
+  - family-names: Anthony
+    given-names: Micheal
+    affiliation: "Covenant University, Ota, Nigeria"
+  - family-names: Oyelade
+    given-names: Jelili
+    affiliation: "Covenant University, Ota, Nigeria"
+repository-code: "https://github.com/michealidedia/FrozenSE"
+license: MIT
+version: 1.6.2
