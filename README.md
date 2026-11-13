@@ -32,6 +32,18 @@ Leave-one-slide-out cross-validation on the 193 labelled cores of the [Gleason 2
 - **FrozenSE-SAM**, the smallest model, comes within 1.5 points of the pretrained U-Net with 5.3 times fewer trainable parameters.
 - With **5 annotated cores** instead of 35, FrozenSE-SAM keeps 98.7% of its accuracy (three independent draws).
 
+### What FrozenSE adds to the encoder
+
+Removing either component of the framework from FrozenSE-UNI, on all six folds:
+
+| UNI configuration | Trainable params | Dice (%) [95% CI] | Slide 7 Dice (%) | Tumour-free patches left empty |
+|---|---|---|---|---|
+| **FrozenSE-UNI** (SE decoder + last two blocks fine-tuned) | 27.4 M | **71.4** [68.6, 74.1] | **61.5** | **51.3%** |
+| Linear head instead of the FrozenSE decoder | 25.2 M | 67.2 [63.7, 70.7] | 41.8 | 34.6% |
+| FrozenSE decoder, encoder fully frozen | 2.2 M | 67.2 [63.5, 70.9] | 42.4 | 35.4% |
+
+Each reduced model loses 4.2 Dice points (Holm-adjusted p < 0.001 and p = 0.002) and falls to the level of the pretrained U-Net, including on the hardest slide. The encoder alone does not give the advantage; the framework does.
+
 Every number above can be recomputed from the saved per-patch results in this repository (see [Recompute the tables and figures](#recompute-the-tables-and-figures)).
 
 ## Repository layout

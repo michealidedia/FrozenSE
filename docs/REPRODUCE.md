@@ -32,6 +32,7 @@ The first code cell holds one setting, `STAGE`. Set it, then use **Save Version 
 | `'ablations'` | One-change ablations on folds 0, 2 and 4 | about 30 |
 | `'data_efficiency'` | Validation learning curve (exploratory) | about 4 |
 | `'extra'` | 5-core experiment (3 draws × 2 models × 6 folds), FrozenSE-Phikon and FrozenSE-UNI | about 50 |
+| `'extra'` with `UNI_ABLATION = True` | Only the two UNI component ablations (linear head; fully frozen encoder), six folds each | about 18 |
 | `'report'` | Every table from the saved results; trains nothing | 0 |
 
 Run the stages in that order. With two GPUs, session time is about half the GPU hours.

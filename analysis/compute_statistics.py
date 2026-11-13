@@ -23,6 +23,8 @@ MODELS = {  # key: (run folder, display name)
     "nnunet": ("nnunet_2d", "nnU-Net (2D)"),
     "zero": ("baseline_mobilesam_native", "MobileSAM (zero-shot)"),
     "orig": ("proposed_frozense_sam", "FrozenSE-SAM, fully frozen, no skips"),
+    "uni_lin": ("pfm_uni_linear_head", "UNI + linear head"),
+    "uni_frz": ("pfm_uni_fully_frozen", "FrozenSE-UNI, fully frozen encoder"),
 }
 
 
@@ -93,7 +95,7 @@ def write(name, rows):
 
 # ---- main results
 main = []
-for key in ("uni", "phikon", "sam", "unet_pre", "unet_scr", "nnunet", "zero", "orig"):
+for key in ("uni", "phikon", "sam", "unet_pre", "unet_scr", "nnunet", "zero", "orig", "uni_lin", "uni_frz"):
     d, lo, hi = (float(D[key]["dice"].mean()),) + boot(D[key]["dice"])
     iou, hd, asd = metric(key, "iou"), metric(key, "hd95_mm", 1000), metric(key, "asd_mm", 1000)
     main.append({"model": MODELS[key][1], "n_cores": len(IDS), "dice_pct": d * 100, "dice_ci_low": lo * 100,
@@ -109,19 +111,21 @@ families = {
     "FrozenSE-Phikon vs trained baselines": [("phikon", b) for b in ("unet_pre", "unet_scr", "nnunet")],
     "FrozenSE-SAM vs trained baselines": [("sam", b) for b in ("unet_pre", "unet_scr", "nnunet")],
     "between encoders": [("uni", "phikon"), ("uni", "sam"), ("phikon", "sam")],
+    "FrozenSE components on UNI": [("uni", "uni_lin"), ("uni", "uni_frz")],
 }
 tests = []
 for fam, comps in families.items():
     res = [pair(a, b) for a, b in comps]
     for r, h in zip(res, holm([r["p_wilcoxon"] for r in res])):
         tests.append({"family": fam, **r, "p_holm": h})
-for a, b in (("sam", "zero"), ("sam", "orig"), ("unet_scr", "unet_pre"), ("nnunet", "unet_pre"), ("zero", "unet_pre")):
+for a, b in (("sam", "zero"), ("sam", "orig"), ("unet_scr", "unet_pre"), ("nnunet", "unet_pre"), ("zero", "unet_pre"),
+             ("uni_lin", "unet_pre"), ("uni_frz", "unet_pre"), ("uni_frz", "uni_lin")):
     tests.append({"family": "descriptive (unadjusted)", **pair(a, b), "p_holm": ""})
 write("paired_tests.csv", tests)
 
 # ---- tumour-containing and tumour-free patches
 acc = []
-for key in ("uni", "phikon", "sam", "unet_pre", "unet_scr", "nnunet", "zero"):
+for key in ("uni", "phikon", "sam", "unet_pre", "unet_scr", "nnunet", "zero", "uni_lin", "uni_frz"):
     c = D[key]["cases"]; free = c.get("both_empty", 0) + c.get("gt_empty_pred_not", 0)
     acc.append({"model": MODELS[key][1], "tumour_patches_tumour_predicted": c.get("both_present", 0),
                 "tumour_patches_none_predicted": c.get("gt_not_pred_empty", 0),

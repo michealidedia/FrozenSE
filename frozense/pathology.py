@@ -138,6 +138,11 @@ class PathologyViTSeg(nn.Module):
 
         self.taps = (depth // 3 - 1, 2 * depth // 3 - 1)  # shallow -> 256 px, deep -> 128 px
         d = enc.dim
+        self.target_size = target_size
+        self.linear_head = getattr(cfg, "head", "se_decoder") == "linear"
+        if self.linear_head:
+            self.head = nn.Conv2d(d, cfg.out_channels, 1)
+            return
         self.neck = nn.Sequential(
             _proj(d, 256),
             nn.ConvTranspose2d(256, 256, 2, stride=2, bias=False),
@@ -177,6 +182,11 @@ class PathologyViTSeg(nn.Module):
             with torch.no_grad():
                 t = enc.final_norm(t)
 
+        if self.linear_head:
+            logits = F.interpolate(self.head(self._grid(t, b, gh, gw)),
+                                   size=(self.target_size, self.target_size),
+                                   mode="bilinear", align_corners=False)
+            return logits, None
         feats = self.neck(self._grid(t, b, gh, gw))
         skips = None
         if self.cfg.use_skip_connections:

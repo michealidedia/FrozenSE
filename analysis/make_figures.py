@@ -134,7 +134,7 @@ def save(fig, name):
     im = Image.open(buf); im.load(); im = im.convert("RGB")
     if TIFF:
         im.save(os.path.join(OUT, name + ".tif"), compression="tiff_lzw", dpi=(TARGET_DPI, TARGET_DPI))
-    im.save(os.path.join(OUT, name + ".png"), dpi=(TARGET_DPI, TARGET_DPI), optimize=True)
+    im.save(os.path.join(OUT, name + ".png"), dpi=(TARGET_DPI + 0.05, TARGET_DPI + 0.05), optimize=True)
     plt.close(fig)
 
 
@@ -374,7 +374,7 @@ for x0, u, v in zip(xs, v35, f5["sam"]):
 a.set_xticks(xs); a.set_xticklabels(["1", "2", "3", "5", "6", "7"]); a.set_xlabel("Held-out test slide"); a.set_ylabel("Dice (%)")
 a.set_ylim(0, 100); a.grid(axis="y"); a.set_axisbelow(True); a.legend(loc="upper right", frameon=False, fontsize=6.4, ncol=1)
 a.set_title("(b) Dice by held-out slide", fontsize=8)
-save(fig, "Figure6")
+save(fig, "Figure7")
 
 # ------------------------------------------------------------------ Figure 7: cost
 eff = {"sam": (4.59, 7.19, 112.1, 76.1), "phikon": (16.23, 87.85, 131.7, 47.1), "uni": (27.37, 305.52, 316.4, 97.9),
@@ -403,5 +403,50 @@ fig.subplots_adjust(wspace=0.2); axs = fig.axes
 p1, p2 = axs[1].get_position(), axs[2].get_position()
 axs[1].set_position([p1.x0 + 0.075, p1.y0, p1.width - 0.045, p1.height])
 axs[2].set_position([p2.x0 + 0.105, p2.y0, p2.width - 0.045, p2.height])
-save(fig, "Figure7")
+save(fig, "Figure8")
 print("figures written to", OUT)
+
+
+# ------------------------------------------------------------------ Figure 6: FrozenSE components on UNI
+# Reads the tables written by compute_statistics.py (run it first).
+T = TABLES
+main = {r["model"]: r for r in csv.DictReader(open(f"{T}/main_results.csv"))}
+sl = {r["model"]: r for r in csv.DictReader(open(f"{T}/per_slide_dice.csv"))}
+acc = {r["model"]: r for r in csv.DictReader(open(f"{T}/patch_accounting.csv"))}
+pt = {(r["model_a"], r["model_b"]): r for r in csv.DictReader(open(f"{T}/paired_tests.csv"))}
+K = [("FrozenSE-UNI", "FrozenSE-UNI\n(decoder + fine-tuned tail)", "#A4243B", "o"),
+     ("FrozenSE-UNI, fully frozen encoder", "Fully frozen encoder\n(no fine-tuning)", "#E07A5F", "s"),
+     ("UNI + linear head", "Linear head\n(no FrozenSE decoder)", "#D4A5AE", "D"),
+     ("U-Net (ImageNet)", "U-Net (ImageNet)\nreference", C["unet_pre"], "^")]
+fig = plt.figure(figsize=(7.2, 2.9)); gs = fig.add_gridspec(1, 3, width_ratios=[1.15, 1.3, 1.05], wspace=0.62)
+a = fig.add_subplot(gs[0, 0])
+for i, (m, lab, col, mk) in enumerate(K):
+    r = main[m]; y = len(K) - 1 - i; d, lo, hi = float(r["dice_pct"]), float(r["dice_ci_low"]), float(r["dice_ci_high"])
+    a.plot([lo, hi], [y, y], color=col, lw=2, solid_capstyle="round"); a.plot(d, y, mk, ms=6.5, color=col, mec="white", mew=1.1, zorder=3)
+    a.text(hi + 0.5, y, f"{d:.1f}", va="center", fontsize=7, fontweight="bold" if i == 0 else "normal")
+for m, y in (("UNI + linear head", 1), ("FrozenSE-UNI, fully frozen encoder", 2)):
+    p = pt[("FrozenSE-UNI", m)]
+    a.text(59.6, y - 0.36, f"−{float(p['mean_diff_pp']):.1f} pp, " + ("p < 0.001" if float(p['p_holm']) < 0.001 else f"p = {float(p['p_holm']):.3f}"), fontsize=5.9, color="#5a5a5a")
+a.set_yticks(range(len(K))); a.set_yticklabels([k[1] for k in K][::-1], fontsize=6.2)
+a.set_xlim(59, 78); a.set_ylim(-0.6, len(K) - 0.4); a.set_xlabel("Dice (%), 193 cores")
+a.set_title("(a) Pooled Dice, 95% CI", fontsize=8); a.grid(axis="x"); a.set_axisbelow(True)
+a = fig.add_subplot(gs[0, 1]); xs = np.arange(6); slides = ["slide001", "slide002", "slide003", "slide005", "slide006", "slide007"]
+hs = []
+for i, (m, lab, col, mk) in enumerate(K):
+    v = [float(sl[m][s]) for s in slides]
+    h, = a.plot(xs, v, marker=mk, color=col, lw=2.0 if i == 0 else 1.2, ms=4.6, mec="white", mew=0.8, zorder=4 - i, ls="-" if i < 3 else "--")
+    hs.append(h)
+a.annotate("slide 7: only the full\nframework generalises", xy=(5, float(sl["FrozenSE-UNI"]["slide007"])), xytext=(1.2, 37),
+           fontsize=6.2, color="#A4243B", arrowprops=dict(arrowstyle="-", color="#A4243B", lw=0.7))
+a.set_xticks(xs); a.set_xticklabels(["1", "2", "3", "5", "6", "7"]); a.set_xlabel("Held-out test slide"); a.set_ylabel("Dice (%)")
+a.set_ylim(30, 85); a.grid(axis="y"); a.set_axisbelow(True); a.set_title("(b) Dice by held-out slide", fontsize=8)
+a = fig.add_subplot(gs[0, 2]); yy = np.arange(len(K))[::-1]
+for i, (m, lab, col, mk) in enumerate(K):
+    v = float(acc[m]["tumour_free_correctly_empty_pct"])
+    a.barh(yy[i], v, color=col, height=0.62); a.text(v + 1, yy[i], f"{v:.1f}%", va="center", fontsize=6.6, fontweight="bold" if i == 0 else "normal")
+a.set_yticks(yy); a.set_yticklabels(["FrozenSE-UNI", "Fully frozen", "Linear head", "U-Net"], fontsize=6.2); a.set_xlim(0, 66)
+a.set_xlabel("Tumour-free patches left empty (%)"); a.set_title("(c) Specificity on 1,157\ntumour-free patches", fontsize=8)
+a.grid(axis="x"); a.set_axisbelow(True)
+fig.legend(handles=hs, labels=[k[1].replace("\n", " ") for k in K], loc="lower center", ncol=2, frameon=False, fontsize=6.6,
+           bbox_to_anchor=(0.5, -0.2), handlelength=1.8, columnspacing=1.5)
+save(fig, "Figure6")

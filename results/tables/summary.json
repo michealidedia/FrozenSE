@@ -127,6 +127,38 @@
    "asd_um": 4.4664102284901075,
    "slide_mean_dice_pct": 61.71941587300105,
    "slide_sd_dice_pct": 12.442338236740557
+  },
+  {
+   "model": "UNI + linear head",
+   "n_cores": 193,
+   "dice_pct": 67.24063603078564,
+   "dice_ci_low": 63.65714856470122,
+   "dice_ci_high": 70.66703473558046,
+   "iou_pct": 62.77385191874001,
+   "iou_ci_low": 59.264359134577525,
+   "iou_ci_high": 66.11756398451021,
+   "hd95_um": 18.07911693855627,
+   "hd95_ci_low": 16.274313274604353,
+   "hd95_ci_high": 20.006201609065666,
+   "asd_um": 3.4861379031298134,
+   "slide_mean_dice_pct": 65.73684707718829,
+   "slide_sd_dice_pct": 12.722004381848762
+  },
+  {
+   "model": "FrozenSE-UNI, fully frozen encoder",
+   "n_cores": 193,
+   "dice_pct": 67.2450160509845,
+   "dice_ci_low": 63.50585417632182,
+   "dice_ci_high": 70.86865743608739,
+   "iou_pct": 62.73731952668902,
+   "iou_ci_low": 59.1125998602432,
+   "iou_ci_high": 66.26387192629697,
+   "hd95_um": 17.8419708810734,
+   "hd95_ci_low": 15.964017106143187,
+   "hd95_ci_high": 19.831399421121326,
+   "asd_um": 3.6652331849095146,
+   "slide_mean_dice_pct": 65.63075161898125,
+   "slide_sd_dice_pct": 12.869088184291991
   }
  ],
  "paired": [
@@ -287,6 +319,32 @@
    "p_holm": 0.10015296919223486
   },
   {
+   "family": "FrozenSE components on UNI",
+   "model_a": "FrozenSE-UNI",
+   "model_b": "UNI + linear head",
+   "n_cores": 193,
+   "mean_diff_pp": 4.164499927227324,
+   "ci_low_pp": 2.4588054373035058,
+   "ci_high_pp": 5.924061561482681,
+   "median_diff_pp": 0.48042821791096646,
+   "p_wilcoxon": 0.00021391680571154943,
+   "cores_a_better": 113,
+   "p_holm": 0.00042783361142309886
+  },
+  {
+   "family": "FrozenSE components on UNI",
+   "model_a": "FrozenSE-UNI",
+   "model_b": "FrozenSE-UNI, fully frozen encoder",
+   "n_cores": 193,
+   "mean_diff_pp": 4.160119907028458,
+   "ci_low_pp": 2.449258519431451,
+   "ci_high_pp": 5.973093472796774,
+   "median_diff_pp": 0.4208310538618698,
+   "p_wilcoxon": 0.0022054485984202526,
+   "cores_a_better": 107,
+   "p_holm": 0.0022054485984202526
+  },
+  {
    "family": "descriptive (unadjusted)",
    "model_a": "FrozenSE-SAM",
    "model_b": "MobileSAM (zero-shot)",
@@ -349,6 +407,45 @@
    "median_diff_pp": -13.560203403485428,
    "p_wilcoxon": 2.017645077497827e-33,
    "cores_a_better": 0,
+   "p_holm": ""
+  },
+  {
+   "family": "descriptive (unadjusted)",
+   "model_a": "UNI + linear head",
+   "model_b": "U-Net (ImageNet)",
+   "n_cores": 193,
+   "mean_diff_pp": 0.653675117240134,
+   "ci_low_pp": -0.67453166693259,
+   "ci_high_pp": 2.073141267918329,
+   "median_diff_pp": -0.2887444733664868,
+   "p_wilcoxon": 0.35915796220576757,
+   "cores_a_better": 88,
+   "p_holm": ""
+  },
+  {
+   "family": "descriptive (unadjusted)",
+   "model_a": "FrozenSE-UNI, fully frozen encoder",
+   "model_b": "U-Net (ImageNet)",
+   "n_cores": 193,
+   "mean_diff_pp": 0.6580551374390021,
+   "ci_low_pp": -0.611289441928589,
+   "ci_high_pp": 2.0342921297077745,
+   "median_diff_pp": 1.0941809958087134e-09,
+   "p_wilcoxon": 0.8393704613970079,
+   "cores_a_better": 98,
+   "p_holm": ""
+  },
+  {
+   "family": "descriptive (unadjusted)",
+   "model_a": "FrozenSE-UNI, fully frozen encoder",
+   "model_b": "UNI + linear head",
+   "n_cores": 193,
+   "mean_diff_pp": 0.004380020198867812,
+   "ci_low_pp": -0.995318413370531,
+   "ci_high_pp": 0.9733541878424656,
+   "median_diff_pp": 0.02021205150635197,
+   "p_wilcoxon": 0.40249239965203365,
+   "cores_a_better": 102,
    "p_holm": ""
   }
  ],
@@ -422,6 +519,26 @@
    "tumour_free_false_positive": 1157,
    "dice_on_tumour_patches_pct": 72.67769232530293,
    "n_cores_with_tumour": 176
+  },
+  {
+   "model": "UNI + linear head",
+   "tumour_patches_tumour_predicted": 2682,
+   "tumour_patches_none_predicted": 21,
+   "tumour_free_correctly_empty": 400,
+   "tumour_free_correctly_empty_pct": 34.57216940363008,
+   "tumour_free_false_positive": 757,
+   "dice_on_tumour_patches_pct": 79.19432445617318,
+   "n_cores_with_tumour": 176
+  },
+  {
+   "model": "FrozenSE-UNI, fully frozen encoder",
+   "tumour_patches_tumour_predicted": 2680,
+   "tumour_patches_none_predicted": 23,
+   "tumour_free_correctly_empty": 409,
+   "tumour_free_correctly_empty_pct": 35.350043215211755,
+   "tumour_free_false_positive": 748,
+   "dice_on_tumour_patches_pct": 78.56737021676,
+   "n_cores_with_tumour": 176
   }
  ],
  "fold_dice": {
@@ -488,6 +605,22 @@
    0.5996679477417498,
    0.681488048280694,
    0.4144657737464327
+  ],
+  "uni_lin": [
+   0.7895760936062666,
+   0.6939687879075185,
+   0.6440567519974743,
+   0.677052702124417,
+   0.7217609617682065,
+   0.4177955272274143
+  ],
+  "uni_frz": [
+   0.7962139672477706,
+   0.7022180719626181,
+   0.6305347760780945,
+   0.6491411838221907,
+   0.7359513784834127,
+   0.42378571954478866
   ]
  }
 }

@@ -259,6 +259,9 @@ class ModelConfig:
     unfreeze_last_n_blocks: int = 0
 
     out_channels: int = 1
+    # Pathology encoders only: 'se_decoder' (FrozenSE) or 'linear' (1x1 conv on
+    # the final tokens, bilinear upsampling): the minimal-head ablation.
+    head: str = "se_decoder"
 
     # Auxiliary signed-distance head, added beside the segmentation head
     # (as in nnSAM).
